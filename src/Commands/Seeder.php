@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Ombimo\LarawebLokasi\Models\LokasiProvinsi;
 use Ombimo\LarawebLokasi\Models\LokasiKota;
 use Ombimo\LarawebLokasi\Models\LokasiKecamatan;
+use Ombimo\LarawebLokasi\Models\LokasiKelurahan;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
@@ -63,6 +64,10 @@ class Seeder extends Command
                     case 3:
                         $db = new LokasiKecamatan;
                         $db->kota_id = $kode[0].$kode[1];
+                        break;
+                    case 4:
+                        $db = new LokasiKelurahan;
+                        $db->kecamatan_id = $kode[0].$kode[1].$kode[2];
                         break;
                 }
 

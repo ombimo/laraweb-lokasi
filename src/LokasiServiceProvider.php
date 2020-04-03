@@ -21,7 +21,8 @@ class LokasiServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Commands\Seeder::class
+                Commands\Seeder::class,
+                Commands\SeederNegara::class,
             ]);
         }
     }
