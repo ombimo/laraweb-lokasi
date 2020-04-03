@@ -115,9 +115,12 @@ class LokasiController extends Controller
         $data = [];
         $limit = $request->query('limit', 20);
         $query = LokasiKelurahan::with(['kecamatan.kota.provinsi'])->defaultSort();
+        $kotaID = intval($request->query('kota'));
 
-        if (!is_null($request->query('kota'))) {
-            $query = $query->where('kota_id', intval($request->query('kota')));
+        if (!empty($kotaID)) {
+            $query = $query->whereHas('kecamatan', function($query) use ($kotaID) {
+                $query->where('kota_id', $kotaID);
+            });
         }
 
         if (!is_null($request->query('provinsi'))) {
