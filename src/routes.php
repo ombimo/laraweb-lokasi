@@ -9,4 +9,5 @@ Route::group([
     Route::get('kota', 'LokasiController@kota')->name('lokasi.kota');
     Route::get('kecamatan', 'LokasiController@kecamatan')->name('lokasi.kecamatan');
     Route::get('kelurahan', 'LokasiController@kelurahan')->name('lokasi.kelurahan');
+    Route::get('dusun', 'LokasiController@dusun')->name('lokasi.dusun');
 });
