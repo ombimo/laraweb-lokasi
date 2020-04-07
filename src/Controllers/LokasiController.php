@@ -130,14 +130,15 @@ class LokasiController extends Controller
 
         if (!is_null($request->query('keyword'))) {
             $key = $request->query('keyword');
-            $query = $query->where(function($query) use ($key) {
+            /*$query = $query->where(function($query) use ($key) {
                 $query->where('nama', 'like', "%". $key ."%")
                       ->orWhereHas('kecamatan.kota', function ($query) use ($key) {
                         $query->where('lokasi_kota.nama', 'like', "%". $key ."%");
                       })->orWhereHas('kecamatan.kota.provinsi', function ($query) use ($key) {
                         $query->where('lokasi_provinsi.nama', 'like', "%". $key ."%");
                       });
-            });
+            });*/
+            $query = $query->where('nama', 'like', "%". $key ."%");
         }
 
         if (!is_null($request->query('id'))) {
