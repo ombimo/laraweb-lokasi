@@ -116,16 +116,23 @@ class LokasiController extends Controller
         $data = [];
         $limit = $request->query('limit', 20);
         $query = LokasiKelurahan::with(['kecamatan.kota.provinsi'])->defaultSort();
-        $kotaID = intval($request->query('kota'));
 
-        if (!empty($kotaID)) {
+        if (!is_null($request->query('kecamatan_id'))) {
+            $query = $query->where('kecamatan_id', intval($request->query('kecamatan_id')));
+        }
+
+        if (!is_null($request->query('kota_id'))) {
+            $kotaID = $request->query('kota_id');
             $query = $query->whereHas('kecamatan', function($query) use ($kotaID) {
                 $query->where('kota_id', $kotaID);
             });
         }
 
-        if (!is_null($request->query('provinsi'))) {
-            $query = $query->where('provinsi_id', intval($request->query('provinsi')));
+        if (!is_null($request->query('provinsi_id'))) {
+            $provinsiID = $request->query('provinsi_id');
+            $query = $query->whereHas('kecamatan.kota', function($query) use ($provinsiID) {
+                $query->where('provinsi_id', $provinsiID);
+            });
         }
 
         if (!is_null($request->query('keyword'))) {
@@ -174,21 +181,30 @@ class LokasiController extends Controller
         $data = [];
         $limit = $request->query('limit', 20);
         $query = LokasiDusun::with(['kelurahan.kecamatan.kota.provinsi'])->defaultSort();
-        $kotaID = $request->query('kota');
-        $kelurahanID = $request->query('kelurahan');
 
-        if (!empty($kotaID)) {
-            $query = $query->whereHas('kecamatan', function($query) use ($kotaID) {
+        if (!is_null($request->query('kelurahan_id'))) {
+            $query = $query->where('kelurahan_id', $request->query('kelurahan_id'));
+        }
+
+        if (!is_null($request->query('kecamatan_id'))) {
+            $kecamatanID = $request->query('kecamatan_id');
+            $query = $query->whereHas('kelurahan', function($query) use ($kecamatanID) {
+                $query->where('kecamatan_id', $kecamatanID);
+            });
+        }
+
+        if (!is_null($request->query('kota_id'))) {
+            $kotaID = $request->query('kota_id');
+            $query = $query->whereHas('kelurahan.kecamatan', function($query) use ($kotaID) {
                 $query->where('kota_id', $kotaID);
             });
         }
 
-        if (!empty($kelurahanID)) {
-            $query = $query->where('kelurahan_id', $kelurahanID);
-        }
-
-        if (!is_null($request->query('provinsi'))) {
-            $query = $query->where('provinsi_id', intval($request->query('provinsi')));
+        if (!is_null($request->query('provinsi_id'))) {
+            $provinsiID = $request->query('provinsi_id');
+            $query = $query->whereHas('kelurahan.kecamatan.kota', function($query) use ($provinsiID) {
+                $query->where('provinsi_id', $provinsiID);
+            });
         }
 
         if (!is_null($request->query('keyword'))) {
