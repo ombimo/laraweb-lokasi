@@ -9,6 +9,7 @@ use Ombimo\LarawebLokasi\Models\LokasiKecamatan;
 use Ombimo\LarawebLokasi\Models\LokasiKelurahan;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Seeder extends Command
 {
@@ -44,41 +45,107 @@ class Seeder extends Command
     public function handle()
     {
         $rajaongkir = $this->option('rajaongkir');
+        $bufferProvinsi = [];
+        $bufferKota = [];
+        $bufferKecamatan = [];
+        $bufferKelurahan = [];
 
         if (!$rajaongkir) {
             $this->info('seeder local');
-            $data = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data.json');
-            $data = json_decode($data);
 
-            foreach ($data as $value) {
-                $kode = explode('.', $value->kode);
-                $db = null;
-                switch (count($kode)) {
-                    case 1:
-                        $db = new LokasiProvinsi;
-                        break;
-                    case 2:
-                        $db = new LokasiKota;
-                        $db->provinsi_id = $kode[0];
-                        break;
-                    case 3:
-                        $db = new LokasiKecamatan;
-                        $db->kota_id = $kode[0].$kode[1];
-                        break;
-                    case 4:
-                        $db = new LokasiKelurahan;
-                        $db->kecamatan_id = $kode[0].$kode[1].$kode[2];
-                        break;
+            $first = true;
+            $doInsert = false;
+            $i = 0;
+            $bufferSize = 2000;
+
+            if (($handle = fopen(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data.csv', "r")) !== FALSE) {
+                while (($data = fgetcsv($handle)) !== FALSE) {
+                    $i++;
+                    $kode = explode('.', $data[0]);
+                    $nama = $data[1];
+                    if (!empty($kode) && !empty($nama)) {
+                        switch (count($kode)) {
+                            case 1:
+                                $bufferProvinsi[] = [
+                                    'id' => implode('', $kode),
+                                    'nama' => $nama,
+                                    'slug' => Str::slug($nama),
+                                ];
+                                if ($first) {
+                                    $first = false;
+                                } else {
+                                    $doInsert = true;
+                                }
+                                break;
+                            case 2:
+                                $bufferKota[] = [
+                                    'id' => implode('', $kode),
+                                    'nama' => $nama,
+                                    'slug' => Str::slug($nama),
+                                    'provinsi_id' => $kode[0],
+                                ];
+                                break;
+                            case 3:
+                                $bufferKecamatan[] = [
+                                    'id' => implode('', $kode),
+                                    'nama' => $nama,
+                                    'slug' => Str::slug($nama),
+                                    'kota_id' => $kode[0].$kode[1],
+                                ];
+                                break;
+                            case 4:
+                                $bufferKelurahan[] = [
+                                    'id' => implode('', $kode),
+                                    'nama' => $nama,
+                                    'slug' => Str::slug($nama),
+                                    'kecamatan_id' => $kode[0].$kode[1].$kode[2],
+                                ];
+                                break;
+                        }
+                    }
+
+                    if ($i > 1000) {
+                        $i = 0;
+
+                        if (!empty($bufferProvinsi)) {
+                            LokasiProvinsi::insert($bufferProvinsi);
+                            $bufferProvinsi = [];
+                        }
+                        if (!empty($bufferKota)) {
+                            LokasiKota::insert($bufferKota);
+                            $bufferKota = [];
+                        }
+                        if (!empty($bufferKecamatan)) {
+                            LokasiKecamatan::insert($bufferKecamatan);
+                            $bufferKecamatan = [];
+                        }
+                        if (!empty($bufferKelurahan)) {
+                            LokasiKelurahan::insert($bufferKelurahan);
+                            $bufferKelurahan = [];
+                        }
+                    }
                 }
 
-                if (!is_null($db)) {
-                    $this->info(implode('', $kode) . ' - ' . $value->nama);
-                    $db->nama = $value->nama;
-                    $db->slug = Str::slug($value->nama);
-                    $db->id = implode('', $kode);
-                    $db->save();
+                if (!empty($bufferProvinsi)) {
+                    LokasiProvinsi::insert($bufferProvinsi);
+                    $bufferProvinsi = [];
                 }
+                if (!empty($bufferKota)) {
+                    LokasiKota::insert($bufferKota);
+                    $bufferKota = [];
+                }
+                if (!empty($bufferKecamatan)) {
+                    LokasiKecamatan::insert($bufferKecamatan);
+                    $bufferKecamatan = [];
+                }
+                if (!empty($bufferKelurahan)) {
+                    LokasiKelurahan::insert($bufferKelurahan);
+                    $bufferKelurahan = [];
+                }
+
+                fclose($handle);
             }
+
         } else {
             $this->info('seeder rajaongkir');
 
@@ -163,5 +230,8 @@ class Seeder extends Command
             $bar->finish();
             $this->info('');
         }
+        $mem = memory_get_usage() / 1024 / 1024;
+        $maxMem = memory_get_peak_usage() / 1024 / 1024;
+        $this->info('memory : ' . $mem . 'MB / ' . $maxMem . 'MB');
     }
 }
