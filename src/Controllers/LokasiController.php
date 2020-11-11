@@ -54,8 +54,8 @@ class LokasiController extends Controller
                 'nama' => $value->nama,
                 'kota' => $value->nama,
                 'slug' => $value->slug,
-                'provinsi_id' => $value->provinsi->id ?? '',
-                'provinsi' => $value->provinsi->nama ?? ''
+                'provinsi_id' => $value->provinsi->id,
+                'provinsi' => $value->provinsi->nama
             ];
         }
 
@@ -101,10 +101,10 @@ class LokasiController extends Controller
                 'nama' => $value->nama,
                 'kecamatan' => $value->nama,
                 'slug' => $value->slug,
-                'kota_id' => $value->kota->id ?? '',
-                'kota' => $value->kota->nama ?? '',
-                'provinsi_id' => $value->kota->provinsi->id ?? '',
-                'provinsi' => $value->kota->provinsi->nama ?? ''
+                'kota_id' => isset($value->kota->id) ? $value->kota->id : '',
+                'kota' => isset($value->kota->nama) ? $value->kota->nama : '',
+                'provinsi_id' => isset($value->kota->provinsi->id) ? $value->kota->provinsi->id : '',
+                'provinsi' => isset($value->kota->provinsi->nama) ? $value->kota->provinsi->nama : ''
             ];
         }
 
@@ -163,13 +163,13 @@ class LokasiController extends Controller
                 'slug' => $value->slug,
 
                 'kecamatan' => $value->kecamatan->nama,
-                'kecamatan_id' => $value->kecamatan->id ?? '',
+                'kecamatan_id' => $value->kecamatan->id,
 
-                'kota_id' => $value->kecamatan->kota->id ?? '',
-                'kota' => $value->kecamatan->kota->nama ?? '',
+                'kota_id' => $value->kecamatan->kota->id,
+                'kota' => $value->kecamatan->kota->nama,
 
-                'provinsi_id' => $value->kecamatan->kota->provinsi->id ?? '',
-                'provinsi' => $value->kecamatan->kota->provinsi->nama ?? ''
+                'provinsi_id' => $value->kecamatan->kota->provinsi->id,
+                'provinsi' => $value->kecamatan->kota->provinsi->nama
             ];
         }
 
@@ -233,17 +233,17 @@ class LokasiController extends Controller
                 'kelurahan' => $value->nama,
                 'slug' => $value->slug,
 
-                'kelurahan' => $value->kelurahan->nama ?? '',
-                'kelurahan_id' => $value->kelurahan->id ?? '',
+                'kelurahan' => $value->kelurahan->nama,
+                'kelurahan_id' => $value->kelurahan->id,
 
-                'kecamatan' => $value->kelurahan->kecamatan->nama ?? '',
-                'kecamatan_id' => $value->kelurahan->kecamatan->id ?? '',
+                'kecamatan' => $value->kelurahan->kecamatan->nama,
+                'kecamatan_id' => $value->kelurahan->kecamatan->id,
 
-                'kota_id' => $value->kelurahan->kecamatan->kota->id ?? '',
-                'kota' => $value->kelurahan->kecamatan->kota->nama ?? '',
+                'kota_id' => $value->kelurahan->kecamatan->kota->id,
+                'kota' => $value->kelurahan->kecamatan->kota->nama,
 
-                'provinsi_id' => $value->kelurahan->kecamatan->kota->provinsi->id ?? '',
-                'provinsi' => $value->kelurahan->kecamatan->kota->provinsi->nama ?? ''
+                'provinsi_id' => $value->kelurahan->kecamatan->kota->provinsi->id,
+                'provinsi' => $value->kelurahan->kecamatan->kota->provinsi->nama
             ];
         }
 

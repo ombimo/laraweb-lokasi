@@ -29,17 +29,17 @@ class LokasiDusun extends Model
 
     public function kecamatan()
     {
-        return $this->kelurahan->kecamatan() ?? null;
+        return $this->kelurahan->kecamatan();
     }
 
     public function kota()
     {
-        return $this->kelurahan->kecamatan->kota() ?? null;
+        return $this->kelurahan->kecamatan->kota();
     }
 
     public function provinsi()
     {
-        return $this->kelurahan->kecamatan->kota->provinsi() ?? null;
+        return $this->kelurahan->kecamatan->kota->provinsi();
     }
 
 }
