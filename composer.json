@@ -11,5 +11,12 @@
         "psr-4": {
             "Ombimo\\LarawebLokasi\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ombimo\\LarawebLokasi\\LokasiServiceProvider"
+            ]
+        }
     }
 }
