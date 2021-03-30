@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateLokasiKecamatanTable extends Migration
 {
@@ -14,12 +14,16 @@ class CreateLokasiKecamatanTable extends Migration
     public function up()
     {
         Schema::create('lokasi_kecamatan', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('kota_id')->nullable();
-            $table->string('nama', 150)->nullable();
-            $table->string('slug', 150)->nullable();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('kota_id');
+            $table->string('nama')->nullable();
+            $table->string('slug')->nullable();
             $table->boolean('publish')->default(1);
             $table->timestamps();
+
+            $table->foreign('kota_id')
+                ->references('id')->on('lokasi_kota')
+                ->onUpdate('no action');
         });
     }
 
