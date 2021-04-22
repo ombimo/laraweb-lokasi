@@ -21,6 +21,13 @@ class KelurahanController extends Controller
             });
         }
 
+        if ($request->query('provinsi_id') != null) {
+            $provinsiID = intval($request->query('provinsi_id'));
+            $query = $query->whereHas('kecamatan.kota', function ($query) use ($provinsiID) {
+                $query->where('provinsi_id', $provinsiID);
+            });
+        }
+
         if ($request->query('keyword') != null) {
             $keyword = $request->query('keyword');
             $query = $query->where('nama', 'like', "%" . $keyword . "%");
