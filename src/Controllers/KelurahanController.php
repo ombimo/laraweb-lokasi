@@ -14,6 +14,13 @@ class KelurahanController extends Controller
 
         $query = Kelurahan::defaultSort()->take($limit);
 
+        if ($request->query('kecamatan_id') != null) {
+            $kecamatanId = intval($request->query('kecamatan_id'));
+            $query = $query->whereHas('kecamatan', function ($query) use ($kecamatanId) {
+                $query->where('id', $kecamatanId);
+            });
+        }
+
         if ($request->query('kota_id') != null) {
             $kotaID = intval($request->query('kota_id'));
             $query = $query->whereHas('kecamatan', function ($query) use ($kotaID) {
